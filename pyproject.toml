@@ -40,6 +40,10 @@ qnn = "jax_plugins.qnn"
 [tool.setuptools.packages.find]
 include = ["jax_qnn*", "jax_plugins*"]
 
+[tool.setuptools.package-data]
+"jax_plugins.qnn" = ["*.dll", "*.so", "*.dylib", "*.bin"]
+"jax_qnn" = ["*.dll", "*.so", "*.dylib"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
