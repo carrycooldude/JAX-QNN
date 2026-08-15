@@ -1,0 +1,41 @@
+# Build artifacts & binaries
+build/
+bin/
+dist/
+*.egg-info/
+*.egg
+*.dll
+*.so
+*.dylib
+*.lib
+*.obj
+*.o
+*.a
+*.exe
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.venv/
+venv/
+ENV/
+
+# Model and temporary data
+*.onnx
+*.bin
+*.dlc
+*.log
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*~

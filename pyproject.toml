@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel", "cmake>=3.20"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jax-qnn"
+version = "0.1.0"
+description = "Qualcomm QNN backend for JAX via PJRT"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+requires-python = ">=3.10"
+authors = [
+    {name = "JAX-QNN Contributors"},
+]
+dependencies = [
+    "jax>=0.4.20",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: C++",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "numpy>=1.24",
+]
+
+# This is how JAX discovers PJRT plugins automatically.
+# When this package is installed, JAX will find and call
+# jax_plugins.qnn.initialize() during startup.
+[project.entry-points."jax_plugins"]
+qnn = "jax_plugins.qnn"
+
+[tool.setuptools.packages.find]
+include = ["jax_qnn*", "jax_plugins*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
