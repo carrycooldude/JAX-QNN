@@ -10,18 +10,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0a0c10;
-            --bg-secondary: #11141b;
-            --bg-card: rgba(22, 27, 34, 0.7);
-            --border: rgba(255, 255, 255, 0.08);
-            --border-hover: rgba(56, 189, 248, 0.4);
-            --text-primary: #f0f6fc;
-            --text-secondary: #8b949e;
-            --text-muted: #6e7681;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --border: rgba(255, 255, 255, 0.15);
+            --border-hover: #38bdf8;
+            --text-primary: #ffffff;
+            --text-secondary: #e2e8f0;
+            --text-muted: #94a3b8;
             --accent-cyan: #38bdf8;
-            --accent-purple: #a855f7;
-            --accent-green: #22c55e;
-            --gradient-accent: linear-gradient(135deg, #38bdf8 0%, #a855f7 50%, #f43f5e 100%);
+            --accent-purple: #c084fc;
+            --accent-green: #34d399;
+            --gradient-accent: linear-gradient(135deg, #38bdf8 0%, #c084fc 50%, #fb7185 100%);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,20 +30,20 @@
             font-family: 'Outfit', sans-serif;
             background-color: var(--bg-primary);
             color: var(--text-primary);
-            line-height: 1.7;
+            line-height: 1.85;
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.06) 0%, transparent 40%),
-                radial-gradient(circle at 90% 40%, rgba(168, 85, 247, 0.06) 0%, transparent 40%);
+                radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 85% 35%, rgba(192, 132, 252, 0.12) 0%, transparent 45%);
         }
 
         .navbar {
             position: sticky;
             top: 0;
             z-index: 100;
-            backdrop-filter: blur(12px);
-            background: rgba(10, 12, 16, 0.85);
+            backdrop-filter: blur(16px);
+            background: rgba(15, 23, 42, 0.9);
             border-bottom: 1px solid var(--border);
-            padding: 1rem 2rem;
+            padding: 1.1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -53,8 +53,8 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            font-weight: 700;
-            font-size: 1.25rem;
+            font-weight: 800;
+            font-size: 1.35rem;
             color: var(--text-primary);
             text-decoration: none;
         }
@@ -75,97 +75,102 @@
         .nav-link {
             color: var(--text-secondary);
             text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
+            font-size: 1rem;
+            font-weight: 600;
             transition: color 0.2s ease;
         }
 
-        .nav-link:hover, .nav-link.active {
-            color: var(--accent-cyan);
-        }
+        .nav-link:hover, .nav-link.active { color: var(--accent-cyan); }
 
         .container {
             max-width: 960px;
-            margin: 3rem auto;
+            margin: 3.5rem auto;
             padding: 0 2rem;
         }
 
         h1 {
-            font-size: 2.75rem;
+            font-size: 3rem;
             font-weight: 800;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
+            color: #ffffff;
             letter-spacing: -0.02em;
         }
 
         h2 {
-            font-size: 1.75rem;
+            font-size: 2rem;
             font-weight: 700;
-            margin: 2.5rem 0 1rem;
+            margin: 3rem 0 1.25rem;
             padding-bottom: 0.5rem;
             border-bottom: 1px solid var(--border);
-            color: var(--accent-cyan);
+            color: #ffffff;
         }
 
         h3 {
-            font-size: 1.3rem;
-            margin: 1.5rem 0 0.75rem;
+            font-size: 1.4rem;
+            margin: 2rem 0 0.75rem;
+            color: #7dd3fc;
+            font-weight: 700;
         }
 
         p, ul, ol {
             color: var(--text-secondary);
-            margin-bottom: 1.25rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
         }
 
-        ul, ol {
-            padding-left: 1.5rem;
-        }
-
-        li {
-            margin-bottom: 0.5rem;
-        }
+        ul, ol { padding-left: 1.75rem; }
+        li { margin-bottom: 0.65rem; }
 
         .highlight-box {
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-left: 4px solid var(--accent-cyan);
             border-radius: 8px;
-            padding: 1.25rem 1.5rem;
-            margin: 1.5rem 0;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            font-size: 1.1rem;
         }
 
         .code-block {
-            background: #0d1117;
+            background: #090d16;
             border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 1.25rem;
+            padding: 1.5rem;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.88rem;
+            font-size: 0.92rem;
             overflow-x: auto;
-            margin: 1.5rem 0;
-            color: #e6edf3;
+            margin: 1.75rem 0;
+            color: #f1f5f9;
+            line-height: 1.65;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 1.5rem 0;
-            font-size: 0.95rem;
+            margin: 2rem 0;
+            font-size: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
         }
 
         th, td {
-            padding: 0.85rem 1rem;
-            border: 1px solid var(--border);
+            padding: 1rem 1.2rem;
+            border-bottom: 1px solid var(--border);
             text-align: left;
         }
 
         th {
-            background: rgba(255, 255, 255, 0.03);
-            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
         }
 
-        td {
-            color: var(--text-secondary);
-        }
+        td { color: var(--text-secondary); }
 
         .badge-check {
             color: var(--accent-green);
@@ -174,14 +179,16 @@
 
         footer {
             border-top: 1px solid var(--border);
-            padding: 2.5rem 2rem;
+            padding: 3rem 2rem;
             text-align: center;
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             margin-top: 5rem;
+            background: #090d16;
         }
 
-        footer a { color: var(--accent-cyan); text-decoration: none; }
+        footer a { color: var(--accent-cyan); text-decoration: none; font-weight: 600; }
+        footer a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -197,6 +204,7 @@
             <a href="benchmarks.html" class="nav-link">Benchmarks</a>
             <a href="setup.html" class="nav-link">Setup</a>
             <a href="examples.html" class="nav-link">Examples</a>
+            <a href="blog.html" class="nav-link">Blog</a>
             <a href="https://github.com/carrycooldude/JAX-QNN" class="nav-link" target="_blank">GitHub</a>
         </div>
     </nav>
@@ -206,7 +214,7 @@
         <p>A comprehensive technical deep-dive into the JAX compiler pipeline, OpenXLA PJRT C API integration, and Qualcomm QNN native graph lowering.</p>
 
         <div class="highlight-box">
-            <strong style="color: var(--text-primary);">Core Principle:</strong> JAX-QNN integrates cleanly through OpenXLA's official <code>GetPjRtApi</code> C ABI. No custom JAX forks, no hacks, and zero Python execution overhead during compiled inference.
+            <strong style="color: #ffffff;">Core Principle:</strong> JAX-QNN integrates cleanly through OpenXLA's official <code>GetPjRtApi</code> C ABI. No custom JAX forks, no hacks, and zero Python execution overhead during compiled inference.
         </div>
 
         <h2>1. Compilation Pipeline Overview</h2>
