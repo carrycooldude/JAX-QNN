@@ -1,5 +1,6 @@
 # JAX-QNN: Qualcomm QNN Backend for JAX
 
+[![PyPI version](https://img.shields.io/pypi/v/jax-qnn.svg?color=blue)](https://pypi.org/project/jax-qnn/)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Target](https://img.shields.io/badge/Target-Snapdragon_NPU_%2F_GPU_%2F_CPU-red.svg)]()
 [![Backend](https://img.shields.io/badge/JAX-PJRT_Plugin-brightgreen.svg)]()
@@ -9,6 +10,14 @@
 **JAX-QNN** is an open-source native backend for **JAX** targeting Qualcomm Snapdragon hardware accelerators (**Hexagon NPU, Adreno GPU, and Oryon CPU**) via Qualcomm AI Engine Direct (QNN) and the OpenXLA **PJRT C API**.
 
 It enables standard JAX code to compile StableHLO intermediate representations directly into native Qualcomm execution graphs with hardware acceleration on Windows on ARM, Linux, and Android.
+
+---
+
+## Installation
+
+```bash
+pip install jax-qnn
+```
 
 ---
 
