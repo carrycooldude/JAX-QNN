@@ -6,13 +6,11 @@ on:
       - main
   workflow_dispatch:
 
-# Permissions required to deploy to GitHub Pages via official GitHub Actions
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment
 concurrency:
   group: 'pages'
   cancel-in-progress: false
@@ -29,6 +27,8 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
