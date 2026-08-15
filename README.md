@@ -4,6 +4,7 @@
 [![Target](https://img.shields.io/badge/Target-Snapdragon_NPU_%2F_GPU_%2F_CPU-red.svg)]()
 [![Backend](https://img.shields.io/badge/JAX-PJRT_Plugin-brightgreen.svg)]()
 [![Hardware](https://img.shields.io/badge/Qualcomm-Hexagon_45_TOPS-purple.svg)]()
+[![Docs](https://img.shields.io/badge/Docs-GitHub_Pages-0ea5e9.svg)](https://carrycooldude.github.io/JAX-QNN/)
 
 **JAX-QNN** is an open-source native backend for **JAX** targeting Qualcomm Snapdragon hardware accelerators (**Hexagon NPU, Adreno GPU, and Oryon CPU**) via Qualcomm AI Engine Direct (QNN) and the OpenXLA **PJRT C API**.
 
