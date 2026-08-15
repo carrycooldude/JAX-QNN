@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture Specification — JAX-QNN</title>
+    <meta name="description" content="Technical architecture of JAX-QNN PJRT C API backend and StableHLO to Qualcomm QNN compiler.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0c10;
+            --bg-secondary: #11141b;
+            --bg-card: rgba(22, 27, 34, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(56, 189, 248, 0.4);
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --accent-cyan: #38bdf8;
+            --accent-purple: #a855f7;
+            --accent-green: #22c55e;
+            --gradient-accent: linear-gradient(135deg, #38bdf8 0%, #a855f7 50%, #f43f5e 100%);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.06) 0%, transparent 40%),
+                radial-gradient(circle at 90% 40%, rgba(168, 85, 247, 0.06) 0%, transparent 40%);
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            background: rgba(10, 12, 16, 0.85);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .badge-snapdragon {
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--accent-cyan);
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--accent-cyan);
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            margin: 1.5rem 0 0.75rem;
+        }
+
+        p, ul, ol {
+            color: var(--text-secondary);
+            margin-bottom: 1.25rem;
+        }
+
+        ul, ol {
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent-cyan);
+            border-radius: 8px;
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .code-block {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            color: #e6edf3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-primary);
+        }
+
+        td {
+            color: var(--text-secondary);
+        }
+
+        .badge-check {
+            color: var(--accent-green);
+            font-weight: 700;
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 5rem;
+        }
+
+        footer a { color: var(--accent-cyan); text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand">
+            <span>⚡ JAX-QNN</span>
+            <span class="badge-snapdragon">Docs</span>
+        </a>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="architecture.html" class="nav-link active">Architecture</a>
+            <a href="benchmarks.html" class="nav-link">Benchmarks</a>
+            <a href="setup.html" class="nav-link">Setup</a>
+            <a href="examples.html" class="nav-link">Examples</a>
+            <a href="https://github.com/carrycooldude/JAX-QNN" class="nav-link" target="_blank">GitHub</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>JAX-QNN Architecture Specification</h1>
+        <p>A comprehensive technical deep-dive into the JAX compiler pipeline, OpenXLA PJRT C API integration, and Qualcomm QNN native graph lowering.</p>
+
+        <div class="highlight-box">
+            <strong style="color: var(--text-primary);">Core Principle:</strong> JAX-QNN integrates cleanly through OpenXLA's official <code>GetPjRtApi</code> C ABI. No custom JAX forks, no hacks, and zero Python execution overhead during compiled inference.
+        </div>
+
+        <h2>1. Compilation Pipeline Overview</h2>
+        <div class="code-block">
+JAX Python Code (@jax.jit)
+       │
+   JAXPR IR
+       │
+StableHLO MLIR Lowering
+       │
+PJRT_Client_Compile (C API)
+       │
+csrc/stablehlo_to_qnn.cc  ──▶  Direct AST walk & Op Mapping
+       │
+Qualcomm QNN Graph Construction (QnnGraph_create / QnnGraph_addNode)
+       │
+Qualcomm HTP Optimization (VTCM Allocation & Op Fusion)
+       │
+QnnGraph_finalize (Compiled Executable Handle)
+       │
+PJRT_LoadedExecutable_Execute (Direct Dispatch to Hexagon NPU 45 TOPS)
+        </div>
+
+        <h2>2. PJRT Plugin Dispatch (`pjrt_qnn.dll`)</h2>
+        <p>The shared library exports the standard C ABI symbol <code>GetPjRtApi()</code> defined in <code>csrc/pjrt/pjrt_c_api.h</code>:</p>
+        <ul>
+            <li><strong>PJRT_Client_Create</strong>: Initializes the Qualcomm AI Engine Direct backend session (HTP / GPU / CPU).</li>
+            <li><strong>PJRT_Client_Devices</strong>: Discovers addressable compute accelerators (e.g. Hexagon NPU ID 0).</li>
+            <li><strong>PJRT_Client_Compile</strong>: Consumes serialized StableHLO bytecode and translates to a finalized <code>QnnGraph_t</code>.</li>
+            <li><strong>PJRT_LoadedExecutable_Execute</strong>: Executes tensor buffers on Qualcomm unified memory with zero-copy where supported.</li>
+        </ul>
+
+        <h2>3. StableHLO to QNN Operator Matrix</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>StableHLO Primitive</th>
+                    <th>Qualcomm QNN Operation</th>
+                    <th>NPU Acceleration (HTP)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>stablehlo.dot_general</code></td>
+                    <td><code>QNN_OP_MAT_MUL</code></td>
+                    <td><span class="badge-check">✔ Native Tensor Core</span></td>
+                </tr>
+                <tr>
+                    <td><code>stablehlo.add</code> / <code>subtract</code></td>
+                    <td><code>QNN_OP_ELEMENT_WISE_ADD / SUB</code></td>
+                    <td><span class="badge-check">✔ Hexagon Vector Unit</span></td>
+                </tr>
+                <tr>
+                    <td><code>stablehlo.multiply</code> / <code>divide</code></td>
+                    <td><code>QNN_OP_ELEMENT_WISE_MUL / DIV</code></td>
+                    <td><span class="badge-check">✔ Hexagon Vector Unit</span></td>
+                </tr>
+                <tr>
+                    <td><code>stablehlo.maximum</code> (ReLU)</td>
+                    <td><code>QNN_OP_RELU</code> / <code>QNN_OP_ELEMENT_WISE_MAX</code></td>
+                    <td><span class="badge-check">✔ Fused Activation</span></td>
+                </tr>
+                <tr>
+                    <td><code>stablehlo.convolution</code></td>
+                    <td><code>QNN_OP_CONV_2D</code></td>
+                    <td><span class="badge-check">✔ 2D/3D HW Engine</span></td>
+                </tr>
+                <tr>
+                    <td><code>stablehlo.reduce</code></td>
+                    <td><code>QNN_OP_REDUCE_SUM / MEAN</code></td>
+                    <td><span class="badge-check">✔ Vector Reduction</span></td>
+                </tr>
+                <tr>
+                    <td><code>stablehlo.reshape</code> / <code>transpose</code></td>
+                    <td><code>QNN_OP_RESHAPE / TRANSPOSE</code></td>
+                    <td><span class="badge-check">✔ Zero-Copy View</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>4. Memory Management (VTCM vs DDR)</h2>
+        <p>Qualcomm Snapdragon processors feature <strong>Vector Tightly-Coupled Memory (VTCM)</strong> directly embedded alongside the Hexagon NPU execution pipelines. During compilation, intermediate tensor allocations are placed in VTCM, completely eliminating main memory bus traffic during deep layer execution.</p>
+    </div>
+
+    <footer>
+        <p>JAX-QNN is released under the <a href="https://github.com/carrycooldude/JAX-QNN/blob/main/LICENSE">Apache-2.0 License</a>.</p>
+    </footer>
+
+</body>
+</html>

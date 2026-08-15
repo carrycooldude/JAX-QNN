@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building & Setup — JAX-QNN</title>
+    <meta name="description" content="Step-by-step guide for setting up and building the JAX-QNN backend on Snapdragon X Elite Windows ARM64 and Linux.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0c10;
+            --bg-secondary: #11141b;
+            --bg-card: rgba(22, 27, 34, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --accent-cyan: #38bdf8;
+            --accent-purple: #a855f7;
+            --accent-green: #22c55e;
+            --gradient-accent: linear-gradient(135deg, #38bdf8 0%, #a855f7 50%, #f43f5e 100%);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.06) 0%, transparent 40%),
+                radial-gradient(circle at 90% 40%, rgba(168, 85, 247, 0.06) 0%, transparent 40%);
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            background: rgba(10, 12, 16, 0.85);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .badge-snapdragon {
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--accent-cyan);
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--accent-cyan);
+        }
+
+        p, ul, ol {
+            color: var(--text-secondary);
+            margin-bottom: 1.25rem;
+        }
+
+        ul, ol {
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .code-block {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            color: #e6edf3;
+        }
+
+        .highlight-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent-cyan);
+            border-radius: 8px;
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 5rem;
+        }
+
+        footer a { color: var(--accent-cyan); text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand">
+            <span>⚡ JAX-QNN</span>
+            <span class="badge-snapdragon">Docs</span>
+        </a>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="architecture.html" class="nav-link">Architecture</a>
+            <a href="benchmarks.html" class="nav-link">Benchmarks</a>
+            <a href="setup.html" class="nav-link active">Setup</a>
+            <a href="examples.html" class="nav-link">Examples</a>
+            <a href="https://github.com/carrycooldude/JAX-QNN" class="nav-link" target="_blank">GitHub</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Building & Installation Guide</h1>
+        <p>Instructions for building the native C++ PJRT plugin library and installing the Python package across Windows on ARM and Linux.</p>
+
+        <h2>1. Prerequisites</h2>
+        <ul>
+            <li><strong>Python 3.10+</strong> with <code>pip</code> and development headers</li>
+            <li><strong>CMake >= 3.20</strong></li>
+            <li><strong>C++17 Compiler:</strong>
+                <ul>
+                    <li>Windows: Visual Studio 2022 (MSVC ARM64 toolchain) or Clang</li>
+                    <li>Linux / Android: Clang 14+ or GCC 11+</li>
+                </ul>
+            </li>
+            <li><strong>Qualcomm QAIRT / QNN SDK (v2.37+):</strong> Download from <a href="https://softwarecenter.qualcomm.com/" target="_blank" style="color: var(--accent-cyan);">Qualcomm Software Center</a>.</li>
+        </ul>
+
+        <h2>2. Configure Environment Variables</h2>
+        <p>Set <code>QNN_SDK_ROOT</code> to your installed SDK directory:</p>
+
+        <p><strong>Windows PowerShell:</strong></p>
+        <div class="code-block">$env:QNN_SDK_ROOT = "C:\Qualcomm\QAIRT\2.37.0.250724"</div>
+
+        <p><strong>Linux / Bash:</strong></p>
+        <div class="code-block">export QNN_SDK_ROOT="/opt/qualcomm/qairt/2.37.0.250724"</div>
+
+        <h2>3. Building the C++ PJRT Plugin (`pjrt_qnn.dll`)</h2>
+        <div class="code-block">
+# 1. Clone the repository
+git clone https://github.com/carrycooldude/JAX-QNN.git
+cd JAX-QNN
+
+# 2. Configure build with CMake
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DQNN_SDK_ROOT=$QNN_SDK_ROOT
+
+# 3. Compile shared library (pjrt_qnn.dll on Windows, pjrt_qnn.so on Linux)
+cmake --build . --config Release
+        </div>
+
+        <h2>4. Installing the Python Package</h2>
+        <div class="code-block">
+# Install in editable development mode
+pip install -e ".[dev]"
+        </div>
+
+        <h2>5. Verifying the Installation</h2>
+        <div class="code-block">
+# Run the test suite
+pytest tests/ -v
+        </div>
+
+        <div class="highlight-box">
+            <strong style="color: var(--text-primary);">Note on STUB Mode:</strong> If <code>QNN_SDK_ROOT</code> is omitted during CMake configuration, the plugin will automatically compile in <strong>STUB mode</strong> with reference CPU execution for development and continuous integration.
+        </div>
+    </div>
+
+    <footer>
+        <p>JAX-QNN is released under the <a href="https://github.com/carrycooldude/JAX-QNN/blob/main/LICENSE">Apache-2.0 License</a>.</p>
+    </footer>
+
+</body>
+</html>

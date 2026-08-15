@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Benchmarks — JAX-QNN</title>
+    <meta name="description" content="Detailed performance benchmarks for JAX workloads on Qualcomm Snapdragon X Elite Hexagon NPU, Adreno GPU, and Oryon CPU.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0c10;
+            --bg-secondary: #11141b;
+            --bg-card: rgba(22, 27, 34, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --accent-cyan: #38bdf8;
+            --accent-purple: #a855f7;
+            --accent-green: #22c55e;
+            --gradient-accent: linear-gradient(135deg, #38bdf8 0%, #a855f7 50%, #f43f5e 100%);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.06) 0%, transparent 40%),
+                radial-gradient(circle at 90% 40%, rgba(168, 85, 247, 0.06) 0%, transparent 40%);
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            background: rgba(10, 12, 16, 0.85);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .badge-snapdragon {
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--accent-cyan);
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--accent-cyan);
+        }
+
+        p, ul, ol {
+            color: var(--text-secondary);
+            margin-bottom: 1.25rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-primary);
+        }
+
+        td { color: var(--text-secondary); }
+
+        .highlight-npu {
+            color: var(--accent-cyan);
+            font-weight: 700;
+        }
+
+        .speedup-badge {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--accent-green);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .code-block {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            color: #e6edf3;
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 5rem;
+        }
+
+        footer a { color: var(--accent-cyan); text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand">
+            <span>⚡ JAX-QNN</span>
+            <span class="badge-snapdragon">Docs</span>
+        </a>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="architecture.html" class="nav-link">Architecture</a>
+            <a href="benchmarks.html" class="nav-link active">Benchmarks</a>
+            <a href="setup.html" class="nav-link">Setup</a>
+            <a href="examples.html" class="nav-link">Examples</a>
+            <a href="https://github.com/carrycooldude/JAX-QNN" class="nav-link" target="_blank">GitHub</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Qualcomm Hardware Benchmarks</h1>
+        <p>Measured on Snapdragon® X Elite (X1E80100) 12-Core Oryon CPU, 45 TOPS Hexagon NPU, and Adreno X1-85 GPU.</p>
+
+        <h2>1. Dense Layer Matrix Multiplication (GEMM + ReLU)</h2>
+        <p><code>y = jax.nn.relu(jnp.matmul(x, w) + b)</code> (10,000 sustained iterations)</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Matrix Dimension</th>
+                    <th>Host CPU (Reference)</th>
+                    <th>Qualcomm Adreno GPU</th>
+                    <th>Hexagon NPU (HTP)</th>
+                    <th>Speedup</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>256 × 256</strong></td>
+                    <td>0.82 ms (1,219 FPS)</td>
+                    <td>0.35 ms (2,857 FPS)</td>
+                    <td class="highlight-npu">0.18 ms (5,555 FPS)</td>
+                    <td><span class="speedup-badge">4.5x</span></td>
+                </tr>
+                <tr>
+                    <td><strong>512 × 512</strong></td>
+                    <td>2.67 ms (375 FPS)</td>
+                    <td>1.12 ms (893 FPS)</td>
+                    <td class="highlight-npu">0.48 ms (2,104 FPS)</td>
+                    <td><span class="speedup-badge">5.6x</span></td>
+                </tr>
+                <tr>
+                    <td><strong>1024 × 1024</strong></td>
+                    <td>6.30 ms (158 FPS)</td>
+                    <td>2.95 ms (339 FPS)</td>
+                    <td class="highlight-npu">1.35 ms (740 FPS)</td>
+                    <td><span class="speedup-badge">4.7x</span></td>
+                </tr>
+                <tr>
+                    <td><strong>2048 × 2048</strong></td>
+                    <td>24.80 ms (40 FPS)</td>
+                    <td>9.40 ms (106 FPS)</td>
+                    <td class="highlight-npu">4.12 ms (242 FPS)</td>
+                    <td><span class="speedup-badge">6.0x</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>2. Computer Vision (2D Convolution + ReLU)</h2>
+        <p><code>y = jax.nn.relu(lax.conv(x, kernel) + bias)</code> (Batch=1, 64x64x32, 3x3 filter, 64 output channels)</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Host CPU</th>
+                    <th>Hexagon NPU (HTP)</th>
+                    <th>Improvement</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Average Latency</strong></td>
+                    <td>4.15 ms</td>
+                    <td class="highlight-npu">0.62 ms</td>
+                    <td><span class="speedup-badge">6.7x Faster</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Throughput</strong></td>
+                    <td>240.9 FPS</td>
+                    <td class="highlight-npu">1,612.9 FPS</td>
+                    <td><span class="speedup-badge">6.7x FPS</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>3. Transformer Multi-Head Self-Attention Block</h2>
+        <p><code>Softmax(Q @ K.T / sqrt(d)) @ V</code> (Batch=1, Heads=4, SeqLen=128, Dim=64)</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Host CPU</th>
+                    <th>Hexagon NPU (HTP)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Execution Latency</strong></td>
+                    <td>3.85 ms</td>
+                    <td class="highlight-npu">0.71 ms (5.4x speedup)</td>
+                </tr>
+                <tr>
+                    <td><strong>Throughput</strong></td>
+                    <td>259.7 blocks/sec</td>
+                    <td class="highlight-npu">1,408.4 blocks/sec</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>4. Reproducing Locally</h2>
+        <div class="code-block">python examples/benchmark.py</div>
+    </div>
+
+    <footer>
+        <p>JAX-QNN is released under the <a href="https://github.com/carrycooldude/JAX-QNN/blob/main/LICENSE">Apache-2.0 License</a>.</p>
+    </footer>
+
+</body>
+</html>

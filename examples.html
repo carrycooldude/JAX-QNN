@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examples & Models — JAX-QNN</title>
+    <meta name="description" content="Runnable JAX examples and neural network models compiled for Qualcomm Hexagon NPU, Adreno GPU, and CPU.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0c10;
+            --bg-secondary: #11141b;
+            --bg-card: rgba(22, 27, 34, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(56, 189, 248, 0.4);
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --accent-cyan: #38bdf8;
+            --accent-purple: #a855f7;
+            --accent-green: #22c55e;
+            --gradient-accent: linear-gradient(135deg, #38bdf8 0%, #a855f7 50%, #f43f5e 100%);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.06) 0%, transparent 40%),
+                radial-gradient(circle at 90% 40%, rgba(168, 85, 247, 0.06) 0%, transparent 40%);
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            background: rgba(10, 12, 16, 0.85);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .badge-snapdragon {
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--accent-cyan);
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--accent-cyan);
+        }
+
+        p { color: var(--text-secondary); margin-bottom: 1rem; }
+
+        .code-block {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88rem;
+            overflow-x: auto;
+            margin: 1rem 0 2rem;
+            color: #e6edf3;
+        }
+
+        .kw { color: #ff7b72; }
+        .fn { color: #d2a8ff; }
+        .str { color: #a5d6ff; }
+        .cm { color: #8b949e; }
+        .num { color: #79c0ff; }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 5rem;
+        }
+
+        footer a { color: var(--accent-cyan); text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand">
+            <span>⚡ JAX-QNN</span>
+            <span class="badge-snapdragon">Docs</span>
+        </a>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="architecture.html" class="nav-link">Architecture</a>
+            <a href="benchmarks.html" class="nav-link">Benchmarks</a>
+            <a href="setup.html" class="nav-link">Setup</a>
+            <a href="examples.html" class="nav-link active">Examples</a>
+            <a href="https://github.com/carrycooldude/JAX-QNN" class="nav-link" target="_blank">GitHub</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Runnable Examples & Workloads</h1>
+        <p>Complete, copy-pasteable JAX models ready to compile and execute on Qualcomm Snapdragon hardware.</p>
+
+        <h2>1. Dense Layer: MatMul + ReLU</h2>
+        <p>A classic fully-connected layer running via <code>backend="qnn"</code>:</p>
+        <div class="code-block"><pre><code><span class="kw">import</span> jax
+<span class="kw">import</span> jax.numpy <span class="kw">as</span> jnp
+<span class="kw">import</span> jax_qnn
+
+<span class="fn">@jax.jit</span>
+<span class="kw">def</span> <span class="fn">dense_layer</span>(x, w, b):
+    <span class="kw">return</span> jax.nn.relu(jnp.matmul(x, w) + b)
+
+x = jnp.ones((<span class="num">128</span>, <span class="num">512</span>), dtype=jnp.float32)
+w = jnp.ones((<span class="num">512</span>, <span class="num">512</span>), dtype=jnp.float32)
+b = jnp.zeros((<span class="num">512</span>,), dtype=jnp.float32)
+
+y = jax.jit(dense_layer, backend=<span class="str">"qnn"</span>)(x, w, b)
+print(<span class="str">"Output:"</span>, y.shape)</code></pre></div>
+
+        <h2>2. 2D Convolution (CNN Vision Block)</h2>
+        <p>Image convolution with 3x3 kernel and bias addition:</p>
+        <div class="code-block"><pre><code><span class="kw">import</span> jax
+<span class="kw">import</span> jax.numpy <span class="kw">as</span> jnp
+<span class="kw">import</span> jax.lax <span class="kw">as</span> lax
+<span class="kw">import</span> jax_qnn
+
+<span class="fn">@jax.jit</span>
+<span class="kw">def</span> <span class="fn">conv_block</span>(x, kernel, bias):
+    conv_out = lax.conv_general_dilated(
+        lhs=x, rhs=kernel, window_strides=(<span class="num">1</span>, <span class="num">1</span>),
+        padding=<span class="str">'SAME'</span>, dimension_numbers=(<span class="str">'NHWC'</span>, <span class="str">'HWIO'</span>, <span class="str">'NHWC'</span>)
+    )
+    <span class="kw">return</span> jax.nn.relu(conv_out + bias)
+
+x = jnp.ones((<span class="num">1</span>, <span class="num">64</span>, <span class="num">64</span>, <span class="num">32</span>), dtype=jnp.float32)
+kernel = jnp.ones((<span class="num">3</span>, <span class="num">3</span>, <span class="num">32</span>, <span class="num">64</span>), dtype=jnp.float32) / <span class="num">9.0</span>
+bias = jnp.zeros((<span class="num">64</span>,), dtype=jnp.float32)
+
+out = jax.jit(conv_block, backend=<span class="str">"qnn"</span>)(x, kernel, bias)
+print(<span class="str">"Output Shape:"</span>, out.shape)</code></pre></div>
+
+        <h2>3. Transformer Multi-Head Self-Attention</h2>
+        <p>Scaled dot-product attention block targeting Hexagon NPU Vector Cores:</p>
+        <div class="code-block"><pre><code><span class="kw">import</span> jax
+<span class="kw">import</span> jax.numpy <span class="kw">as</span> jnp
+<span class="kw">import</span> jax_qnn
+
+<span class="fn">@jax.jit</span>
+<span class="kw">def</span> <span class="fn">self_attention</span>(q, k, v):
+    d_k = q.shape[-<span class="num">1</span>]
+    scores = jnp.matmul(q, jnp.swapaxes(k, -<span class="num">2</span>, -<span class="num">1</span>)) / jnp.sqrt(d_k)
+    weights = jax.nn.softmax(scores, axis=-<span class="num">1</span>)
+    <span class="kw">return</span> jnp.matmul(weights, v)
+
+q = jnp.ones((<span class="num">1</span>, <span class="num">4</span>, <span class="num">128</span>, <span class="num">64</span>), dtype=jnp.float32)
+k = jnp.ones((<span class="num">1</span>, <span class="num">4</span>, <span class="num">128</span>, <span class="num">64</span>), dtype=jnp.float32)
+v = jnp.ones((<span class="num">1</span>, <span class="num">4</span>, <span class="num">128</span>, <span class="num">64</span>), dtype=jnp.float32)
+
+out = jax.jit(self_attention, backend=<span class="str">"qnn"</span>)(q, k, v)
+print(<span class="str">"Attention Out:"</span>, out.shape)</code></pre></div>
+    </div>
+
+    <footer>
+        <p>JAX-QNN is released under the <a href="https://github.com/carrycooldude/JAX-QNN/blob/main/LICENSE">Apache-2.0 License</a>.</p>
+    </footer>
+
+</body>
+</html>
