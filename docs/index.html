@@ -10,37 +10,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0a0c10;
-            --bg-secondary: #11141b;
-            --bg-card: rgba(22, 27, 34, 0.7);
-            --border: rgba(255, 255, 255, 0.08);
-            --border-hover: rgba(56, 189, 248, 0.4);
-            --text-primary: #f0f6fc;
-            --text-secondary: #8b949e;
-            --text-muted: #6e7681;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --border: rgba(255, 255, 255, 0.15);
+            --border-hover: #38bdf8;
+            --text-primary: #ffffff;
+            --text-secondary: #e2e8f0;
+            --text-muted: #94a3b8;
             --accent-cyan: #38bdf8;
-            --accent-purple: #a855f7;
-            --accent-green: #22c55e;
-            --accent-coral: #f43f5e;
-            --gradient-accent: linear-gradient(135deg, #38bdf8 0%, #a855f7 50%, #f43f5e 100%);
-            --glow: rgba(56, 189, 248, 0.15);
+            --accent-purple: #c084fc;
+            --accent-green: #34d399;
+            --accent-coral: #fb7185;
+            --gradient-accent: linear-gradient(135deg, #38bdf8 0%, #c084fc 50%, #fb7185 100%);
+            --glow: rgba(56, 189, 248, 0.25);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--bg-primary);
             color: var(--text-primary);
-            line-height: 1.6;
+            line-height: 1.8;
             overflow-x: hidden;
             background-image: 
-                radial-gradient(circle at 20% 10%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 80% 30%, rgba(168, 85, 247, 0.08) 0%, transparent 40%);
+                radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 85% 35%, rgba(192, 132, 252, 0.12) 0%, transparent 45%);
         }
 
         /* Navbar */
@@ -48,10 +44,10 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            backdrop-filter: blur(12px);
-            background: rgba(10, 12, 16, 0.8);
+            backdrop-filter: blur(16px);
+            background: rgba(15, 23, 42, 0.9);
             border-bottom: 1px solid var(--border);
-            padding: 1rem 2rem;
+            padding: 1.1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -61,8 +57,8 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            font-weight: 700;
-            font-size: 1.25rem;
+            font-weight: 800;
+            font-size: 1.35rem;
             color: var(--text-primary);
             text-decoration: none;
         }
@@ -83,14 +79,12 @@
         .nav-link {
             color: var(--text-secondary);
             text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
+            font-size: 1rem;
+            font-weight: 600;
             transition: color 0.2s ease;
         }
 
-        .nav-link:hover {
-            color: var(--accent-cyan);
-        }
+        .nav-link:hover { color: var(--accent-cyan); }
 
         .btn-github {
             display: inline-flex;
@@ -99,24 +93,24 @@
             background: var(--bg-secondary);
             color: var(--text-primary);
             border: 1px solid var(--border);
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 1.1rem;
             border-radius: 9999px;
-            font-weight: 600;
-            font-size: 0.9rem;
+            font-weight: 700;
+            font-size: 0.95rem;
             text-decoration: none;
             transition: all 0.2s ease;
         }
 
         .btn-github:hover {
             border-color: var(--accent-cyan);
-            box-shadow: 0 0 16px var(--glow);
+            box-shadow: 0 0 20px var(--glow);
             transform: translateY(-1px);
         }
 
         /* Hero */
         .hero {
             max-width: 1200px;
-            margin: 4rem auto 3rem;
+            margin: 4.5rem auto 3.5rem;
             padding: 0 2rem;
             text-align: center;
         }
@@ -125,24 +119,25 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: rgba(56, 189, 248, 0.1);
-            color: var(--accent-cyan);
-            border: 1px solid rgba(56, 189, 248, 0.25);
-            padding: 0.35rem 1rem;
+            background: rgba(56, 189, 248, 0.18);
+            color: #7dd3fc;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            padding: 0.4rem 1.1rem;
             border-radius: 9999px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 1.75rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
 
         .hero h1 {
-            font-size: 3.5rem;
+            font-size: 3.8rem;
             font-weight: 800;
             line-height: 1.15;
             margin-bottom: 1.5rem;
             letter-spacing: -0.02em;
+            color: #ffffff;
         }
 
         .hero-gradient {
@@ -152,24 +147,25 @@
         }
 
         .hero p {
-            font-size: 1.25rem;
+            font-size: 1.3rem;
             color: var(--text-secondary);
-            max-width: 750px;
+            max-width: 800px;
             margin: 0 auto 2.5rem;
         }
 
         .hero-actions {
             display: flex;
-            gap: 1rem;
+            gap: 1.25rem;
             justify-content: center;
             flex-wrap: wrap;
         }
 
         .btn-primary {
             background: #38bdf8;
-            color: #0a0c10;
-            font-weight: 700;
-            padding: 0.75rem 1.75rem;
+            color: #0f172a;
+            font-weight: 800;
+            font-size: 1.05rem;
+            padding: 0.85rem 2rem;
             border-radius: 8px;
             text-decoration: none;
             transition: all 0.2s ease;
@@ -177,7 +173,7 @@
 
         .btn-primary:hover {
             background: #7dd3fc;
-            box-shadow: 0 0 24px rgba(56, 189, 248, 0.4);
+            box-shadow: 0 0 24px rgba(56, 189, 248, 0.5);
             transform: translateY(-2px);
         }
 
@@ -185,8 +181,9 @@
             background: var(--bg-secondary);
             color: var(--text-primary);
             border: 1px solid var(--border);
-            font-weight: 600;
-            padding: 0.75rem 1.75rem;
+            font-weight: 700;
+            font-size: 1.05rem;
+            padding: 0.85rem 2rem;
             border-radius: 8px;
             text-decoration: none;
             transition: all 0.2s ease;
@@ -208,41 +205,41 @@
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 1.5rem;
-            margin: 3rem 0;
+            gap: 1.75rem;
+            margin: 3.5rem 0;
         }
 
         .card {
             background: var(--bg-card);
-            backdrop-filter: blur(12px);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 1.75rem;
+            padding: 2rem;
             transition: all 0.25s ease;
         }
 
         .card:hover {
             border-color: var(--border-hover);
             transform: translateY(-3px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
         }
 
         .card-icon {
-            font-size: 2rem;
+            font-size: 2.25rem;
             margin-bottom: 1rem;
             display: inline-block;
         }
 
         .card h3 {
-            font-size: 1.25rem;
+            font-size: 1.35rem;
             margin-bottom: 0.75rem;
-            color: var(--text-primary);
+            color: #ffffff;
+            font-weight: 700;
         }
 
         .card p {
             color: var(--text-secondary);
-            font-size: 0.95rem;
-            line-height: 1.5;
+            font-size: 1.05rem;
+            line-height: 1.6;
         }
 
         /* Benchmark Table */
@@ -259,12 +256,14 @@
         }
 
         .section-header h2 {
-            font-size: 2rem;
+            font-size: 2.2rem;
             margin-bottom: 0.5rem;
+            color: #ffffff;
         }
 
         .section-header p {
             color: var(--text-secondary);
+            font-size: 1.1rem;
         }
 
         .table-responsive {
@@ -275,40 +274,40 @@
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            font-size: 0.95rem;
+            font-size: 1rem;
         }
 
         th {
-            background: rgba(255, 255, 255, 0.03);
-            color: var(--text-muted);
-            font-weight: 600;
-            padding: 1rem;
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            font-weight: 700;
+            padding: 1rem 1.2rem;
             border-bottom: 1px solid var(--border);
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
         }
 
         td {
-            padding: 1rem;
+            padding: 1.1rem 1.2rem;
             border-bottom: 1px solid var(--border);
-            color: var(--text-primary);
+            color: var(--text-secondary);
         }
 
         tr:hover td {
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(255, 255, 255, 0.03);
         }
 
         .highlight-npu {
-            color: var(--accent-cyan);
-            font-weight: 700;
+            color: #38bdf8;
+            font-weight: 800;
         }
 
         .speedup-badge {
-            background: rgba(34, 197, 94, 0.15);
-            color: var(--accent-green);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            padding: 0.2rem 0.5rem;
+            background: rgba(52, 211, 153, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(52, 211, 153, 0.4);
+            padding: 0.25rem 0.6rem;
             border-radius: 4px;
             font-weight: 700;
             font-size: 0.85rem;
@@ -316,13 +315,13 @@
 
         /* Code Block */
         .code-container {
-            background: #0d1117;
+            background: #090d16;
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 1.5rem;
-            margin: 2rem 0;
+            padding: 1.75rem;
+            margin: 2.5rem 0;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             position: relative;
             overflow-x: auto;
         }
@@ -332,36 +331,36 @@
             justify-content: space-between;
             align-items: center;
             color: var(--text-muted);
-            margin-bottom: 1rem;
-            font-size: 0.8rem;
+            margin-bottom: 1.25rem;
+            font-size: 0.85rem;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 0.5rem;
+            padding-bottom: 0.65rem;
         }
 
         pre {
-            color: #e6edf3;
-            line-height: 1.6;
+            color: #f1f5f9;
+            line-height: 1.65;
         }
 
-        .kw { color: #ff7b72; }
-        .fn { color: #d2a8ff; }
+        .kw { color: #ff7b72; font-weight: 600; }
+        .fn { color: #d2a8ff; font-weight: 600; }
         .str { color: #a5d6ff; }
-        .cm { color: #8b949e; }
+        .cm { color: #94a3b8; }
         .num { color: #79c0ff; }
 
-        /* Footer */
         footer {
             border-top: 1px solid var(--border);
-            padding: 3rem 2rem;
+            padding: 3.5rem 2rem;
             text-align: center;
             color: var(--text-muted);
-            font-size: 0.9rem;
-            background: var(--bg-primary);
+            font-size: 0.95rem;
+            background: #090d16;
         }
 
         footer a {
             color: var(--accent-cyan);
             text-decoration: none;
+            font-weight: 600;
         }
 
         footer a:hover {
@@ -382,6 +381,7 @@
             <a href="benchmarks.html" class="nav-link">Benchmarks</a>
             <a href="setup.html" class="nav-link">Setup</a>
             <a href="examples.html" class="nav-link">Examples</a>
+            <a href="blog.html" class="nav-link">Blog</a>
             <a href="https://github.com/carrycooldude/JAX-QNN" class="btn-github" target="_blank">
                 <svg height="18" width="18" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
                 GitHub
@@ -460,7 +460,7 @@ print(<span class="str">"Output shape:"</span>, output.shape)</code></pre>
                     <h2>Snapdragon® X Elite Benchmarks</h2>
                     <p>Measured on Qualcomm Snapdragon X Elite (X1E80100) 12-Core Oryon CPU & 45 TOPS Hexagon NPU.</p>
                 </div>
-                <a href="benchmarks.html" style="color: var(--accent-cyan); font-weight: 600; text-decoration: none; font-size: 0.95rem;">View Full Benchmarks →</a>
+                <a href="benchmarks.html" style="color: var(--accent-cyan); font-weight: 700; text-decoration: none; font-size: 1rem;">View Full Benchmarks →</a>
             </div>
             <div class="table-responsive">
                 <table>
@@ -514,18 +514,18 @@ print(<span class="str">"Output shape:"</span>, output.shape)</code></pre>
                     <h2>Explore Examples</h2>
                     <p>Run community examples across Computer Vision, Large Language Models, and Benchmarks.</p>
                 </div>
-                <a href="examples.html" style="color: var(--accent-cyan); font-weight: 600; text-decoration: none; font-size: 0.95rem;">View All Examples →</a>
+                <a href="examples.html" style="color: var(--accent-cyan); font-weight: 700; text-decoration: none; font-size: 1rem;">View All Examples →</a>
             </div>
             <div class="grid">
-                <a href="examples.html#dense" class="card" style="text-decoration: none;">
+                <a href="examples.html" class="card" style="text-decoration: none;">
                     <h3>Linear GEMM + Activation</h3>
                     <p>Standard dense neural network layer executed on Qualcomm Hexagon NPU.</p>
                 </a>
-                <a href="examples.html#conv" class="card" style="text-decoration: none;">
+                <a href="examples.html" class="card" style="text-decoration: none;">
                     <h3>2D Convolution (CNN)</h3>
                     <p>Computer vision convolutional filter layer mapped to QNN native ops.</p>
                 </a>
-                <a href="examples.html#transformer" class="card" style="text-decoration: none;">
+                <a href="examples.html" class="card" style="text-decoration: none;">
                     <h3>Transformer Multi-Head Attention</h3>
                     <p>Scaled dot-product attention block targeting Hexagon Vector units.</p>
                 </a>
