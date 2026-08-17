@@ -1,33 +1,23 @@
-# =============================================================================
-# examples/simple_add.py — Minimal JAX-QNN Example
-# =============================================================================
-
 """
-Minimal example demonstrating elementwise addition compiled and executed
-via the Qualcomm QNN backend for JAX.
+Minimal example: Elementwise addition using JAX on Qualcomm QNN.
 """
 
 import jax
 import jax.numpy as jnp
 import jax_qnn
 
+@jax.jit
+def add_fn(x, y):
+    return x + y
 
-def main():
-    print("=== JAX QNN Backend: Simple Add ===")
-    print(f"Available QNN devices: {jax.devices('qnn')}")
-
-    @jax.jit
-    def add_fn(x, y):
-        return x + y
-
+if __name__ == "__main__":
     x = jnp.ones((1024, 1024), dtype=jnp.float32)
     y = jnp.ones((1024, 1024), dtype=jnp.float32)
 
-    result = jax.jit(add_fn, backend="qnn")(x, y)
-    print(f"Result shape: {result.shape}")
-    print(f"Result sum: {float(jnp.sum(result))}")
-    print(f"Expected sum: {1024 * 1024 * 2.0}")
-
-
-if __name__ == "__main__":
-    main()
+    z = jax.jit(add_fn, backend="qnn")(x, y)
+    
+    # Verify correctness against standard execution
+    expected = add_fn(x, y)
+    assert jnp.allclose(z, expected), "Mismatch between QNN and CPU reference!"
+    
+    print(f"Success: z.shape={z.shape}, sum={float(jnp.sum(z))}")
