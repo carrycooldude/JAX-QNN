@@ -201,105 +201,79 @@
 
     <div class="container">
         <h1>Qualcomm Hardware Benchmarks</h1>
-        <p>Measured on Snapdragon® X Elite (X1E80100) 12-Core Oryon CPU, 45 TOPS Hexagon NPU, and Adreno X1-85 GPU.</p>
+        <p>Measured on Snapdragon® X Elite (X1E80100) 12-Core Oryon CPU, Windows 11 ARM64, using <code>python examples/benchmark.py</code>.</p>
 
         <h2>1. Dense Layer Matrix Multiplication (GEMM + ReLU)</h2>
-        <p><code>y = jax.nn.relu(jnp.matmul(x, w) + b)</code> (10,000 sustained iterations)</p>
+        <p><code>y = jax.nn.relu(jnp.matmul(x, w) + b)</code> — 50-100 sustained iterations, averaged</p>
         <table>
             <thead>
                 <tr>
                     <th>Matrix Dimension</th>
-                    <th>Host CPU (Reference)</th>
-                    <th>Qualcomm Adreno GPU</th>
-                    <th>Hexagon NPU (HTP)</th>
+                    <th>Host CPU (Measured)</th>
+                    <th>QNN Backend (Measured)</th>
                     <th>Speedup</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td><strong>256 × 256</strong></td>
-                    <td>0.82 ms (1,219 FPS)</td>
-                    <td>0.35 ms (2,857 FPS)</td>
-                    <td class="highlight-npu">0.18 ms (5,555 FPS)</td>
-                    <td><span class="speedup-badge">4.5x</span></td>
+                    <td>0.38 ms (2,639 FPS)</td>
+                    <td>0.42 ms (2,353 FPS)</td>
+                    <td><span class="speedup-badge">~1.0x</span></td>
                 </tr>
                 <tr>
                     <td><strong>512 × 512</strong></td>
-                    <td>2.67 ms (375 FPS)</td>
-                    <td>1.12 ms (893 FPS)</td>
-                    <td class="highlight-npu">0.48 ms (2,104 FPS)</td>
-                    <td><span class="speedup-badge">5.6x</span></td>
+                    <td>1.83 ms (546 FPS)</td>
+                    <td class="highlight-npu">1.61 ms (623 FPS)</td>
+                    <td><span class="speedup-badge">1.1x</span></td>
                 </tr>
                 <tr>
                     <td><strong>1024 × 1024</strong></td>
-                    <td>6.30 ms (158 FPS)</td>
-                    <td>2.95 ms (339 FPS)</td>
-                    <td class="highlight-npu">1.35 ms (740 FPS)</td>
-                    <td><span class="speedup-badge">4.7x</span></td>
-                </tr>
-                <tr>
-                    <td><strong>2048 × 2048</strong></td>
-                    <td>24.80 ms (40 FPS)</td>
-                    <td>9.40 ms (106 FPS)</td>
-                    <td class="highlight-npu">4.12 ms (242 FPS)</td>
-                    <td><span class="speedup-badge">6.0x</span></td>
+                    <td>6.07 ms (165 FPS)</td>
+                    <td>6.12 ms (163 FPS)</td>
+                    <td><span class="speedup-badge">~1.0x</span></td>
                 </tr>
             </tbody>
         </table>
 
-        <h2>2. Computer Vision (2D Convolution + ReLU)</h2>
-        <p><code>y = jax.nn.relu(lax.conv(x, kernel) + bias)</code> (Batch=1, 64x64x32, 3x3 filter, 64 output channels)</p>
-        <table>
-            <thead>
-                <tr>
-                    <th>Metric</th>
-                    <th>Host CPU</th>
-                    <th>Hexagon NPU (HTP)</th>
-                    <th>Improvement</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Average Latency</strong></td>
-                    <td>4.15 ms</td>
-                    <td class="highlight-npu">0.62 ms</td>
-                    <td><span class="speedup-badge">6.7x Faster</span></td>
-                </tr>
-                <tr>
-                    <td><strong>Throughput</strong></td>
-                    <td>240.9 FPS</td>
-                    <td class="highlight-npu">1,612.9 FPS</td>
-                    <td><span class="speedup-badge">6.7x FPS</span></td>
-                </tr>
-            </tbody>
-        </table>
+        <p style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 1rem 1.25rem; color: #7dd3fc; font-size: 0.95rem;">
+            <strong>ℹ️ Note:</strong> The QNN backend currently routes through the CPU reference runtime (<code>QnnCpu.dll</code>). 
+            When the full Hexagon NPU (HTP) hardware path is activated via <code>QnnHtp.dll</code>, significantly higher speedups 
+            are expected due to VTCM on-chip memory and hardware op-fusion.
+        </p>
 
-        <h2>3. Transformer Multi-Head Self-Attention Block</h2>
-        <p><code>Softmax(Q @ K.T / sqrt(d)) @ V</code> (Batch=1, Heads=4, SeqLen=128, Dim=64)</p>
+        <h2>2. Hardware Architecture Advantages (When NPU Path Is Enabled)</h2>
+        <p>The Qualcomm Hexagon NPU is designed for high-throughput tensor workloads:</p>
         <table>
             <thead>
                 <tr>
-                    <th>Metric</th>
-                    <th>Host CPU</th>
+                    <th>Feature</th>
+                    <th>CPU (Oryon)</th>
                     <th>Hexagon NPU (HTP)</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td><strong>Execution Latency</strong></td>
-                    <td>3.85 ms</td>
-                    <td class="highlight-npu">0.71 ms (5.4x speedup)</td>
+                    <td><strong>Memory</strong></td>
+                    <td>LPDDR5x (shared)</td>
+                    <td class="highlight-npu">VTCM on-chip SRAM (TB/s bandwidth)</td>
                 </tr>
                 <tr>
-                    <td><strong>Throughput</strong></td>
-                    <td>259.7 blocks/sec</td>
-                    <td class="highlight-npu">1,408.4 blocks/sec</td>
+                    <td><strong>Op Fusion</strong></td>
+                    <td>None (sequential dispatch)</td>
+                    <td class="highlight-npu">MatMul + Bias + ReLU fused in hardware</td>
+                </tr>
+                <tr>
+                    <td><strong>Peak Throughput</strong></td>
+                    <td>Reference baseline</td>
+                    <td class="highlight-npu">45 TOPS (INT8) / 22.5 TFLOPS (FP16)</td>
                 </tr>
             </tbody>
         </table>
 
-        <h2>4. Reproducing Locally</h2>
-        <div class="code-block">python examples/benchmark.py</div>
+        <h2>3. Reproducing Locally</h2>
+        <div class="code-block">pip install jax-qnn
+python examples/benchmark.py</div>
     </div>
 
     <footer>

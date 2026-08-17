@@ -113,16 +113,17 @@ sequenceDiagram
 
 ## Benchmarks on Snapdragon® X Elite
 
-All benchmarks were evaluated on a **Snapdragon® X Elite (X1E80100)** featuring 12 Oryon CPU cores and a 45 TOPS Hexagon NPU running Windows 11 ARM64:
+Measured on a **Snapdragon® X Elite (X1E80100)** featuring 12 Oryon CPU cores, running Windows 11 ARM64 using `python examples/benchmark.py`:
 
-| Workload | Host CPU (Oryon) | Adreno GPU (X1-85) | Hexagon NPU (HTP) | Speedup vs CPU |
-| :--- | :--- | :--- | :--- | :--- |
-| **512×512 Dense Layer (GEMM + ReLU)** | 2.67 ms | 1.12 ms | **0.48 ms (2,104 FPS)** | **5.6x** |
-| **1024×1024 Dense Layer** | 6.30 ms | 2.95 ms | **1.35 ms (740 FPS)** | **4.7x** |
-| **2D Convolution (64x64x32, 3x3)** | 4.15 ms | 1.45 ms | **0.62 ms (1,613 FPS)** | **6.7x** |
-| **Transformer Self-Attention (Seq 128)** | 3.85 ms | 1.60 ms | **0.71 ms (1,408 FPS)** | **5.4x** |
+| Workload | CPU (Measured) | QNN Backend (Measured) | Speedup |
+| :--- | :--- | :--- | :--- |
+| **256×256 Dense GEMM + ReLU** | 0.38 ms | 0.42 ms | ~1.0x |
+| **512×512 Dense GEMM + ReLU** | 1.83 ms | 1.61 ms | 1.1x |
+| **1024×1024 Dense GEMM + ReLU** | 6.07 ms | 6.12 ms | ~1.0x |
 
-### Why Is the Hexagon NPU So Fast?
+> **Note:** The QNN backend currently routes through the CPU reference runtime (`QnnCpu.dll`). When the full Hexagon NPU (HTP) hardware path is activated via `QnnHtp.dll`, significantly higher throughput is expected due to VTCM on-chip memory and hardware op-fusion.
+
+### Why Will the Hexagon NPU Be Faster?
 1. **VTCM (Vector Tightly-Coupled Memory)**: Unlike CPU/GPU architectures that constantly exchange tensors with main LPDDR5x memory, Hexagon stores intermediate layer activations in on-chip SRAM with terabytes-per-second internal bandwidth.
 2. **Op Fusion**: The QNN compiler collapses MatMul, Bias Add, and ReLU into a single uninterrupted hardware sequence.
 

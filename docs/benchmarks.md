@@ -20,43 +20,31 @@ This document details latency, throughput, and hardware efficiency measurements 
 
 ---
 
-## 2. Latency and Throughput Comparison
+## 2. Measured Latency and Throughput
 
-Measurements were captured across 10,000 sustained iterations per workload with warmup cycles discarded.
+Measurements captured using `python examples/benchmark.py` with 50-100 sustained iterations per workload (warmup discarded).
 
-### Workload A: Dense Layer (GEMM + Bias Add + ReLU)
+### Dense Layer (GEMM + Bias Add + ReLU)
 
 `y = jax.nn.relu(jnp.matmul(x, w) + b)`
 
-| Matrix Dimension | Host CPU (Oryon) | Qualcomm Adreno GPU | Qualcomm Hexagon NPU | NPU Speedup vs CPU |
-| :--- | :--- | :--- | :--- | :--- |
-| **256 × 256** | 0.82 ms (1,219 FPS) | 0.35 ms (2,857 FPS) | **0.18 ms (5,555 FPS)** | **4.5x** |
-| **512 × 512** | 2.67 ms (375 FPS) | 1.12 ms (893 FPS) | **0.48 ms (2,104 FPS)** | **5.6x** |
-| **1024 × 1024** | 6.30 ms (158 FPS) | 2.95 ms (339 FPS) | **1.35 ms (740 FPS)** | **4.7x** |
-| **2048 × 2048** | 24.80 ms (40 FPS) | 9.40 ms (106 FPS) | **4.12 ms (242 FPS)** | **6.0x** |
-
----
-
-### Workload B: Computer Vision (2D Convolution + ReLU)
-
-`y = jax.nn.relu(lax.conv(x, kernel) + bias)` (Input: 1x64x64x32, 3x3 Filter, 64 Channels)
-
-| Metric | Host CPU | Hexagon NPU (HTP) | Improvement |
+| Matrix Dimension | CPU (Measured) | QNN Backend (Measured) | Speedup |
 | :--- | :--- | :--- | :--- |
-| **Average Latency** | 4.15 ms | **0.62 ms** | **6.7x Lower Latency** |
-| **Throughput** | 240.9 FPS | **1,612.9 FPS** | **6.7x Throughput** |
-| **Memory Traffic** | Host DDR | **VTCM (Vector Memory)** | **Zero CPU Cache Thrashing** |
+| **256 × 256** | 0.38 ms (2,639 FPS) | 0.42 ms (2,353 FPS) | ~1.0x |
+| **512 × 512** | 1.83 ms (546 FPS) | 1.61 ms (623 FPS) | 1.1x |
+| **1024 × 1024** | 6.07 ms (165 FPS) | 6.12 ms (163 FPS) | ~1.0x |
+
+> **Note:** The QNN backend currently routes through the CPU reference runtime (`QnnCpu.dll`). When the full Hexagon NPU (HTP) hardware path is activated via `QnnHtp.dll`, significantly higher speedups are expected due to VTCM on-chip memory and hardware op-fusion.
 
 ---
 
-### Workload C: Transformer Multi-Head Self-Attention Block
+### Hardware Architecture Advantages (When NPU Path Is Enabled)
 
-Scaled Dot-Product Attention: `Softmax(Q @ K.T / sqrt(d)) @ V` (Batch=1, Heads=4, SeqLen=128, Dim=64)
-
-| Metric | Host CPU | Hexagon NPU (HTP) |
+| Feature | CPU (Oryon) | Hexagon NPU (HTP) |
 | :--- | :--- | :--- |
-| **Execution Time** | 3.85 ms | **0.71 ms (5.4x speedup)** |
-| **Throughput** | 259.7 blocks/sec | **1,408.4 blocks/sec** |
+| **Memory** | LPDDR5x (shared) | VTCM on-chip SRAM (TB/s bandwidth) |
+| **Op Fusion** | None (sequential dispatch) | MatMul + Bias + ReLU fused in hardware |
+| **Peak Throughput** | Reference baseline | 45 TOPS (INT8) / 22.5 TFLOPS (FP16) |
 
 ---
 

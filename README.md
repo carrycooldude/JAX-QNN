@@ -21,28 +21,29 @@ pip install jax-qnn
 
 ---
 
-## Performance Highlights (Snapdragon® X Elite)
+## Performance (Snapdragon® X Elite)
 
-Measured on a **12-Core Snapdragon® X Elite (X1E80100) with 45 TOPS Qualcomm® Hexagon™ NPU**:
+Measured on a **12-Core Snapdragon® X Elite (X1E80100)** using `python examples/benchmark.py`:
 
-| Workload | Host CPU | Qualcomm Adreno GPU | Qualcomm Hexagon NPU | Speedup vs CPU |
-| :--- | :--- | :--- | :--- | :--- |
-| **512×512 Dense Layer (GEMM + ReLU)** | 2.67 ms (375 FPS) | 1.12 ms (893 FPS) | **0.48 ms (2,104 FPS)** | **5.6x** |
-| **1024×1024 Dense Layer** | 6.30 ms (158 FPS) | 2.95 ms (339 FPS) | **1.35 ms (740 FPS)** | **4.7x** |
-| **2D Convolution (64x64x32, 3x3)** | 4.15 ms (241 FPS) | 1.45 ms (690 FPS) | **0.62 ms (1,613 FPS)** | **6.7x** |
-| **Transformer Self-Attention (Seq 128)** | 3.85 ms (260 FPS) | 1.60 ms (625 FPS) | **0.71 ms (1,408 FPS)** | **5.4x** |
+| Workload | CPU (Measured) | QNN Backend (Measured) | Speedup |
+| :--- | :--- | :--- | :--- |
+| **256×256 Dense GEMM + ReLU** | 0.38 ms | 0.42 ms | ~1.0x |
+| **512×512 Dense GEMM + ReLU** | 1.83 ms | 1.61 ms | 1.1x |
+| **1024×1024 Dense GEMM + ReLU** | 6.07 ms | 6.12 ms | ~1.0x |
 
-> See [docs/benchmarks.md](docs/benchmarks.md) for full benchmark methodology and memory bandwidth analysis.
+> **Note:** Current QNN backend routes through the CPU reference runtime. When the full Hexagon NPU (HTP) hardware path is enabled via `QnnHtp.dll`, significantly higher speedups are expected due to VTCM on-chip memory and hardware op-fusion. Run `python examples/benchmark.py` to reproduce on your device.
+
+> See [docs/benchmarks.md](docs/benchmarks.md) for full benchmark methodology.
 
 ---
 
 ## Hardware Targets
 
-| Accelerator | QNN Engine | Best For | Typical Throughput |
-| :--- | :--- | :--- | :--- |
-| **Hexagon NPU (HTP)** | `QnnHtp.dll` / `libQnnHtp.so` | Low-latency inference, Quantized INT8/FP16, Transformers | Up to 2,100+ ops/sec |
-| **Adreno GPU** | `QnnGpu.dll` / `libQnnGpu.so` | Floating-point FP32/FP16 matrix math & Computer Vision | Up to 890+ ops/sec |
-| **Host CPU** | `QnnCpu.dll` / Reference | Development, fallback verification, and CPU debugging | Up to 375 ops/sec |
+| Accelerator | QNN Engine | Best For |
+| :--- | :--- | :--- |
+| **Hexagon NPU (HTP)** | `QnnHtp.dll` / `libQnnHtp.so` | Low-latency inference, Quantized INT8/FP16, Transformers |
+| **Adreno GPU** | `QnnGpu.dll` / `libQnnGpu.so` | Floating-point FP32/FP16 matrix math & Computer Vision |
+| **Host CPU** | `QnnCpu.dll` / Reference | Development, fallback verification, and CPU debugging |
 
 ---
 

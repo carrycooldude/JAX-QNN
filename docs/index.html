@@ -458,7 +458,7 @@ print(<span class="str">"Output shape:"</span>, output.shape)</code></pre>
             <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end;">
                 <div>
                     <h2>Snapdragon® X Elite Benchmarks</h2>
-                    <p>Measured on Qualcomm Snapdragon X Elite (X1E80100) 12-Core Oryon CPU & 45 TOPS Hexagon NPU.</p>
+                    <p>Measured on Qualcomm Snapdragon X Elite (X1E80100) 12-Core Oryon CPU using <code>python examples/benchmark.py</code>.</p>
                 </div>
                 <a href="benchmarks.html" style="color: var(--accent-cyan); font-weight: 700; text-decoration: none; font-size: 1rem;">View Full Benchmarks →</a>
             </div>
@@ -467,40 +467,29 @@ print(<span class="str">"Output shape:"</span>, output.shape)</code></pre>
                     <thead>
                         <tr>
                             <th>Workload</th>
-                            <th>Host CPU (Reference)</th>
-                            <th>Qualcomm Adreno GPU</th>
-                            <th>Hexagon NPU (HTP)</th>
-                            <th>NPU Speedup</th>
+                            <th>CPU (Measured)</th>
+                            <th>QNN Backend (Measured)</th>
+                            <th>Speedup</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><strong>512×512 Dense Layer (GEMM + ReLU)</strong></td>
-                            <td>2.67 ms (375 FPS)</td>
-                            <td>1.12 ms (893 FPS)</td>
-                            <td class="highlight-npu">0.48 ms (2,104 FPS)</td>
-                            <td><span class="speedup-badge">5.6x</span></td>
+                            <td><strong>256×256 Dense GEMM + ReLU</strong></td>
+                            <td>0.38 ms</td>
+                            <td>0.42 ms</td>
+                            <td><span class="speedup-badge">~1.0x</span></td>
                         </tr>
                         <tr>
-                            <td><strong>1024×1024 Dense Layer</strong></td>
-                            <td>6.30 ms (158 FPS)</td>
-                            <td>2.95 ms (339 FPS)</td>
-                            <td class="highlight-npu">1.35 ms (740 FPS)</td>
-                            <td><span class="speedup-badge">4.7x</span></td>
+                            <td><strong>512×512 Dense GEMM + ReLU</strong></td>
+                            <td>1.83 ms</td>
+                            <td class="highlight-npu">1.61 ms</td>
+                            <td><span class="speedup-badge">1.1x</span></td>
                         </tr>
                         <tr>
-                            <td><strong>2D Convolution (64x64x32, 3x3)</strong></td>
-                            <td>4.15 ms (241 FPS)</td>
-                            <td>1.45 ms (690 FPS)</td>
-                            <td class="highlight-npu">0.62 ms (1,613 FPS)</td>
-                            <td><span class="speedup-badge">6.7x</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Transformer Self-Attention (Seq 128)</strong></td>
-                            <td>3.85 ms (260 FPS)</td>
-                            <td>1.60 ms (625 FPS)</td>
-                            <td class="highlight-npu">0.71 ms (1,408 FPS)</td>
-                            <td><span class="speedup-badge">5.4x</span></td>
+                            <td><strong>1024×1024 Dense GEMM + ReLU</strong></td>
+                            <td>6.07 ms</td>
+                            <td>6.12 ms</td>
+                            <td><span class="speedup-badge">~1.0x</span></td>
                         </tr>
                     </tbody>
                 </table>
