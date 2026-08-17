@@ -47,6 +47,77 @@ Measured on a **12-Core Snapdragon® X Elite (X1E80100)** using `python examples
 
 ---
 
+## Live Qualcomm Hardware Validation (NPU & GPU)
+
+Run the hardware verification tool to test direct execution on both the **45 TOPS Hexagon NPU** and the **Adreno GPU**:
+
+```bash
+python tools/test_qualcomm_hardware.py
+```
+
+**Live Execution Log (Snapdragon® X Elite on Windows 11 ARM64):**
+
+```text
+Loading native library: C:\Users\rawat\JAX-QNN\build\pjrt_qnn.dll
+
+=======================================================
+ Testing Qualcomm Target: Qualcomm Hexagon NPU (HTP) (ID=1)
+=======================================================
+[JAX-QNN] QnnInterface successfully bound (providers: 1)
+ <W> Initializing HtpProvider
+[JAX-QNN] QnnBackend created successfully.
+ <W> Logs will be sent to the system's default channel
+ <E> DspTransport.openSession qnn_open failed, 0x80000406, prio 100
+ <E> IDspTransport: Unable to load lib 0x80000406
+ <E> DspTransport.getHandle failed, error 0x00000008
+ <E> createDspTransportInstance failed to config transport object
+ <E> error in creation of transport instance
+ <W> Failed to create transport instance: 1002
+ <W> Failed to load skel, error: 1002
+ <W> Traditional path not available. Switching to user driver path
+ <W> HTP user driver is loaded. Switched to user driver path
+[JAX-QNN] QnnContext created successfully.
+[JAX-QNN] Native QNN Hardware Backend Initialized: C:\Users\rawat\Downloads\v2.37.0.250724\qairt\2.37.0.250724\lib\aarch64-windows-msvc\QnnHtp.dll
+[+] Init Result: 0 (Backend: C:\Users\rawat\Downloads\v2.37.0.250724\qairt\2.37.0.250724\lib\aarch64-windows-msvc\QnnHtp.dll)
+[JAX-QNN] Parsing StableHLO (425 bytes)
+[JAX-QNN] Parsed computation 'main': 2 inputs, 1 outputs, 3 ops
+[JAX-QNN]   Input 0: [4, 4] f32
+[JAX-QNN]   Input 1: [4, 4] f32
+[JAX-QNN]   Op: stablehlo.dot_general (inputs: 2, outputs: 0)
+[JAX-QNN]   Op: stablehlo.maximum (inputs: 2, outputs: 1)
+[JAX-QNN]   Op: stablehlo.return (inputs: 1, outputs: 0)
+[+] Graph Compiled Successfully (Handle: 0x243694f18c0)
+[+] Inputs: 2, Outputs: 1
+[+] Hardware Execution Status: 0
+[+] Correctness Verified! Output[0, 0] = 24.0 (Expected: 24.0)
+
+=======================================================
+ Testing Qualcomm Target: Qualcomm Adreno GPU (OpenCL/Direct3D) (ID=2)
+=======================================================
+ <W> Logs will be sent to the system's default channel
+ <W> m_CFBCallbackInfoObj is not initialized, return emptyList
+ <W> Logs will be sent to the system's default channel
+ <W> Logs will be sent to the system's default channel
+[JAX-QNN] QnnInterface successfully bound (providers: 1)
+[JAX-QNN] QnnBackend created successfully.
+[JAX-QNN] QnnContext created successfully.
+[JAX-QNN] Native QNN Hardware Backend Initialized: C:\Users\rawat\Downloads\v2.37.0.250724\qairt\2.37.0.250724\lib\aarch64-windows-msvc\QnnGpu.dll
+[+] Init Result: 0 (Backend: C:\Users\rawat\Downloads\v2.37.0.250724\qairt\2.37.0.250724\lib\aarch64-windows-msvc\QnnGpu.dll)
+[JAX-QNN] Parsing StableHLO (425 bytes)
+[JAX-QNN] Parsed computation 'main': 2 inputs, 1 outputs, 3 ops
+[JAX-QNN]   Input 0: [4, 4] f32
+[JAX-QNN]   Input 1: [4, 4] f32
+[JAX-QNN]   Op: stablehlo.dot_general (inputs: 2, outputs: 0)
+[JAX-QNN]   Op: stablehlo.maximum (inputs: 2, outputs: 1)
+[JAX-QNN]   Op: stablehlo.return (inputs: 1, outputs: 0)
+[+] Graph Compiled Successfully (Handle: 0x243800dc6f0)
+[+] Inputs: 2, Outputs: 1
+[+] Hardware Execution Status: 0
+[+] Correctness Verified! Output[0, 0] = 24.0 (Expected: 24.0)
+```
+
+---
+
 ## Quickstart
 
 ### 1. Installation
