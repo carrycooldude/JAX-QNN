@@ -49,7 +49,7 @@ QnnRuntime::~QnnRuntime() {
 
 bool QnnRuntime::Initialize(const QnnRuntimeConfig& config) {
   if (initialized_) {
-    return true;
+    Shutdown();
   }
 
   std::string backend_lib = config.custom_backend_path;
@@ -138,6 +138,7 @@ bool QnnRuntime::LoadBackendLibrary(const std::string& lib_path) {
       }
     }
   }
+
 #endif
 
   return true;
