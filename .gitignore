@@ -1,5 +1,7 @@
 # Build artifacts & binaries
 build/
+build_x64/
+*.bat
 bin/
 dist/
 *.egg-info/

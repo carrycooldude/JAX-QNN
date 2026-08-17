@@ -75,6 +75,7 @@ set(PLUGIN_SOURCES
     csrc/qnn_buffer.cc
     csrc/stablehlo_to_qnn.cc
     csrc/qnn_runtime.cc
+    csrc/qnn_c_api.cc
 )
 
 add_library(pjrt_qnn SHARED ${PLUGIN_SOURCES})

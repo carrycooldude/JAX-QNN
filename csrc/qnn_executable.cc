@@ -100,7 +100,7 @@ static void ReduceSum(const float* input, float* output,
 // Execute the parsed computation
 // =============================================================================
 
-static PJRT_Error* ExecuteComputation(
+PJRT_Error* ExecuteComputation(
     const ParsedComputation& comp,
     const std::vector<QnnBufferState*>& inputs,
     std::vector<std::unique_ptr<QnnBufferState>>& outputs,

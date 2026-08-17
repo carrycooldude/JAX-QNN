@@ -304,6 +304,12 @@ std::unique_ptr<ParsedComputation> ParseStableHLO(const std::string& mlir_text) 
       auto first_space = rhs.find_first_of(" (");
       if (first_space != std::string::npos) {
         op.op_type = Trim(rhs.substr(0, first_space));
+        while (!op.op_type.empty() && (op.op_type.front() == '"' || op.op_type.front() == '\'')) {
+          op.op_type.erase(op.op_type.begin());
+        }
+        while (!op.op_type.empty() && (op.op_type.back() == '"' || op.op_type.back() == '\'')) {
+          op.op_type.pop_back();
+        }
         
         // Parse operands
         std::string rest = rhs.substr(first_space);
