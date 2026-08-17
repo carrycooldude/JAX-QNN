@@ -19,8 +19,8 @@ def run_benchmarks():
     print("=" * 70)
     print("   JAX-QNN: MULTI-HARDWARE LATENCY & THROUGHPUT BENCHMARK")
     print("=" * 70)
-    print("Platform: Qualcomm Snapdragon X Elite (X1E80100)")
-    print("Target Workloads: Dense Layer GEMM + ReLU (FP32 & FP16)")
+    print(f"Available QNN devices: {jax.devices('qnn')}")
+    print("Target Workloads: Dense Layer GEMM + ReLU (FP32)")
     print("-" * 70)
 
     test_shapes = [
@@ -28,6 +28,8 @@ def run_benchmarks():
         ("Medium GEMM", 512, 512, 512),
         ("Large GEMM", 1024, 1024, 1024),
     ]
+
+    results = []
 
     for label, M, K, N in test_shapes:
         print(f"\n[*] Benchmarking {label} [{M}x{K} @ {K}x{N}]...")
@@ -40,47 +42,55 @@ def run_benchmarks():
         w = jnp.ones((K, N), dtype=jnp.float32)
         b = jnp.zeros((N,), dtype=jnp.float32)
 
+        t_cpu = None
+        t_qnn = None
+
         # 1. CPU Reference Execution
         try:
-            # Warmup
-            _ = model(x, w, b).block_until_ready()
-            
+            _ = model(x, w, b).block_until_ready()  # warmup
+
+            num_runs = 50
             t0 = time.perf_counter()
-            runs = 50
-            for _ in range(runs):
+            for _ in range(num_runs):
                 _ = model(x, w, b).block_until_ready()
-            t_cpu = (time.perf_counter() - t0) / runs * 1000
-            fps_cpu = 1000.0 / t_cpu
-            print(f"  - Host CPU Reference : {t_cpu:6.2f} ms | {fps_cpu:7.1f} runs/sec")
+            t_cpu = (time.perf_counter() - t0) / num_runs * 1000
+            print(f"  - Host CPU           : {t_cpu:7.2f} ms | {1000.0 / t_cpu:8.1f} runs/sec")
         except Exception as e:
-            t_cpu = None
-            print(f"  - Host CPU Reference : N/A ({e})")
+            print(f"  - Host CPU           : error ({e})")
 
         # 2. QNN Backend Execution
         try:
             qnn_model = jax.jit(model, backend="qnn")
-            _ = qnn_model(x, w, b).block_until_ready()
+            _ = qnn_model(x, w, b).block_until_ready()  # warmup
 
+            num_runs = 100
             t0 = time.perf_counter()
-            runs = 100
-            for _ in range(runs):
+            for _ in range(num_runs):
                 _ = qnn_model(x, w, b).block_until_ready()
-            t_qnn = (time.perf_counter() - t0) / runs * 1000
-            fps_qnn = 1000.0 / t_qnn
-            speedup = f"{t_cpu / t_qnn:.2f}x" if t_cpu else "N/A"
-            print(f"  - QNN Backend Target : {t_qnn:6.2f} ms | {fps_qnn:7.1f} runs/sec | Speedup: {speedup}")
+            t_qnn = (time.perf_counter() - t0) / num_runs * 1000
+            speedup = f"{t_cpu / t_qnn:.1f}x" if t_cpu else "N/A"
+            print(f"  - QNN Backend        : {t_qnn:7.2f} ms | {1000.0 / t_qnn:8.1f} runs/sec | Speedup: {speedup}")
         except Exception as e:
-            print(f"  - QNN Backend Target : Execution error ({e})")
+            print(f"  - QNN Backend        : error ({e})")
 
+        results.append((label, f"{M}x{N}", t_cpu, t_qnn))
+
+    # Print summary from actual measured data
     print("\n" + "=" * 70)
-    print("   SNAPDRAGON X ELITE HARDWARE MEASUREMENT SUMMARY")
+    print("   MEASURED RESULTS SUMMARY")
     print("=" * 70)
-    print("Hardware Accelerator | Peak TOPs | Latency (512x512) | Throughput")
-    print("---------------------+-----------+-------------------+------------------")
-    print("Hexagon NPU (HTP)    | 45 TOPS   | 0.48 ms           | 2104.3 runs/sec")
-    print("Adreno GPU (X1-85)   | 4.6 TFLOPS| 1.12 ms           |  892.8 runs/sec")
-    print("Oryon 12-Core CPU    | Reference | 2.67 ms           |  374.5 runs/sec")
+    print(f"{'Workload':<20} | {'Shape':<10} | {'CPU (ms)':>10} | {'QNN (ms)':>10} | {'Speedup':>8}")
+    print("-" * 70)
+    for label, shape, t_cpu, t_qnn in results:
+        cpu_str = f"{t_cpu:.2f}" if t_cpu else "N/A"
+        qnn_str = f"{t_qnn:.2f}" if t_qnn else "N/A"
+        if t_cpu and t_qnn:
+            speedup_str = f"{t_cpu / t_qnn:.1f}x"
+        else:
+            speedup_str = "N/A"
+        print(f"{label:<20} | {shape:<10} | {cpu_str:>10} | {qnn_str:>10} | {speedup_str:>8}")
     print("=" * 70)
+
 
 if __name__ == "__main__":
     run_benchmarks()
